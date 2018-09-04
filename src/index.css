@@ -2,9 +2,28 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Courier New",Courier, monospace;
-  background: linear-gradient(89deg,#FF5EDF 0%,#04C8DE 100%);
+  background: linear-gradient(89deg,#AAA 0%,#BBB 100%);
+  color: #223843;
 }
 
 button{
 	cursor: pointer;
 }
+
+.spartan{
+	color: #9E1A1A;
+}
+.sky{
+	color:#5CC8FF;
+}
+
+/*colors{
+	#BBBBBB gray
+	#EFF1F3 white
+	#223843 dark blue
+	#495867 middle blue
+	#577399 light blue
+	#5CC8FF light light blue	
+	#CCF5AC light green
+	
+}*/

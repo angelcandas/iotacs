@@ -1,0 +1,14 @@
+.grow:hover,
+.grow:focus { 
+	z-index: 9999;
+	transform: scale(5);
+
+}
+.botoncerrar{
+	position: 'absolute';
+	top: 5px;
+}
+
+.action{
+	z-index: 2;
+}

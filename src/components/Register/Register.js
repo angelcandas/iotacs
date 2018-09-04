@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Button} from 'primereact/components/button/Button';
 	class Register extends React.Component{
 	constructor(){
 		super();
@@ -8,7 +8,7 @@ import React from 'react';
 			signInPassword:'',
 			signInName:'',
 		}
-		this.Email='Emailadada';
+		this.Email='Email';
 	}
 	onPasswordChange =(event) =>{
 		this.setState({signInPassword: event.target.value})
@@ -21,7 +21,8 @@ import React from 'react';
 		this.setState({signInEmail: event.target.value})
 	}
 	onSubmitSignIn = () =>{
-		fetch('https://agile-spire-60137.herokuapp.com/register',{
+		console.log("URL: "+this.props.URL)
+		fetch(this.props.URL+'/register',{
 			method: 'post',
 			headers: {'content-type': 'application/json'},
 			body: JSON.stringify({
@@ -46,11 +47,12 @@ import React from 'react';
 
 
 	render(){
-	//const {onRouteChange} = this.props;
+	const {onRouteChange} = this.props;
 	return(
-		<article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 center shadow-5">
-		<main className="pa4 black-80">
+		<article className="br3 ba panel b--black-10 mv4 w-100 w-50-m w-25-l mw6 center shadow-5">
+		<main className="pa4">
 		  <form className="measure">
+		  	<h1 className="tc fw7 IOTACS">IoTACS</h1>
 		    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
 		      <legend className="f4 fw6 ph0 mh0">Register</legend>
 		      <div className="mt3">
@@ -85,11 +87,13 @@ import React from 'react';
 		      </div>
 		    </fieldset>
 		    <div className="">
-		      <input 
+		      <Button 
 		      onClick={this.onSubmitSignIn}
 		      className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
-		      type="button" 
-		      value="Register"/>
+		      label="Register"/>
+		    </div>
+		    <div className="lh-copy mt3">
+		      <p onClick={() => onRouteChange('signin')} className="pointer f6 link dim black db">Already an account?</p>
 		    </div>
 		  </form>
 		</main>

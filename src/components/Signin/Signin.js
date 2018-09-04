@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Button} from 'primereact/components/button/Button';
 
 class Signin extends React.Component{
 
@@ -19,7 +19,8 @@ class Signin extends React.Component{
 		this.setState({signInEmail: event.target.value})
 	}
 	onSubmitSignIn = () =>{
-		fetch('https://agile-spire-60137.herokuapp.com/signin',{
+		console.log("URL_SERV_SERV: "+this.props.URL_SERV)
+		fetch(this.props.URL_SERV+'/signin',{
 			method: 'post',
 			headers: {'content-type': 'application/json'},
 			body: JSON.stringify({
@@ -38,9 +39,11 @@ class Signin extends React.Component{
 	render(){
 		const {onRouteChange} = this.props;
 	return(
-		<article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 center shadow-5">
-		<main className="pa4 black-80">
+		<div>
+		<article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 center shadow-5 panel">
+		<main className="pa4 ">
 		  <form className="measure">
+		<h1 className="tc fw7 IOTACS">IoTACS</h1>
 		    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
 		      <legend className="f4 fw6 ph0 mh0">Sign In</legend>
 		      <div className="mt3">
@@ -64,11 +67,11 @@ class Signin extends React.Component{
 		      </div>
 		    </fieldset>
 		    <div className="">
-		      <input 
+		      <Button 
 		      onClick={this.onSubmitSignIn}
 		      className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
 		      type="button" 
-		      value="Sign in"/>
+		      label="Sign in"/>
 		    </div>
 		    <div className="lh-copy mt3">
 		      <p onClick={() => onRouteChange('register')} className="pointer f6 link dim black db">Register</p>
@@ -76,6 +79,7 @@ class Signin extends React.Component{
 		  </form>
 		</main>
 		</article>
+		</div>
 		);
 	}
 }
