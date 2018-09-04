@@ -38,7 +38,7 @@ export default class Device extends Component {
 		}
 		console.log("el pajaro es la: "+this.props.email)
 		this.etitle="Device editor"
-		client= mqtt.connect('ws://iotacsmqtt.herokuapp.com',settings);
+		client= mqtt.connect('wss://iotacsmqtt.herokuapp.com',settings);
 		client.subscribe("users/"+this.props.device.email);
 
 		client.on("message", (topic, payload) =>{
