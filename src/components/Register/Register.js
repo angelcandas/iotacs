@@ -22,7 +22,7 @@ import {Button} from 'primereact/components/button/Button';
 	}
 	onSubmitSignIn = () =>{
 		console.log("URL: "+this.props.URL_SERV)
-		fetch(this.props.URL+'/register',{
+		fetch(this.props.URL_SERV+'/register',{
 			method: 'post',
 			headers: {'content-type': 'application/json'},
 			body: JSON.stringify({
@@ -41,6 +41,7 @@ import {Button} from 'primereact/components/button/Button';
 				console.log("email exist");
 			}
 		})
+		.catch(err=>console.log(err))
 	}
 
 
