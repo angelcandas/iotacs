@@ -21,7 +21,7 @@ import {Button} from 'primereact/components/button/Button';
 		this.setState({signInEmail: event.target.value})
 	}
 	onSubmitSignIn = () =>{
-		console.log("URL: "+this.props.URL)
+		console.log("URL: "+this.props.URL_SERV)
 		fetch(this.props.URL+'/register',{
 			method: 'post',
 			headers: {'content-type': 'application/json'},
