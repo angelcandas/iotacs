@@ -17,6 +17,18 @@ button{
 	color:#5CC8FF;
 }
 
+.top_bar{
+	display: flex;
+	align-items: center;
+	justify-content:flex-end;
+	height: 50px;
+	background: #EFF1F3;
+}
+
+#grafica{
+	height: 200px;
+}
+
 /*colors{
 	#BBBBBB gray
 	#EFF1F3 white
@@ -27,3 +39,4 @@ button{
 	#CCF5AC light green
 	
 }*/
+

@@ -12,6 +12,8 @@ export default class RadarChartDemo extends Component {
             value:50,
             units: 'ºC'
         }
+
+        
         //this.update();
     }
     componentDidMount(){

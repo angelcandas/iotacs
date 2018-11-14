@@ -30,8 +30,10 @@ class Signin extends React.Component{
 		})
 		.then(response => response.json())
 		.then(user =>{
-			if (user.id) {
-				this.props.loadUser(user);
+			if (user.token) {
+				this.props.loadUser(user.user[0])
+				localStorage.setItem('token', user.token)
+				localStorage.setItem('user', JSON.stringify(user.user[0]))
 				this.props.onRouteChange('home');
 			}
 		})
