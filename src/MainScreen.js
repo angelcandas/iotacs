@@ -3,7 +3,7 @@ import Device from './components/Device/Device';
 import {InputText} from 'primereact/components/inputtext/InputText';
 import {Button} from 'primereact/components/button/Button';
 import {Growl} from 'primereact/components/growl/Growl';
-import welcome from './components/Welcome/welcome'
+
 
 /*const initialState= {
 			searchfield:'',
@@ -135,7 +135,7 @@ onDeleteToken = (token) => {
 		this.getData()
 		this.setState({numdevices: this.state.devices.length})
 		this.generateDevice();
-		return(this.setState(this.state.devices: devices))
+		return(this.setState({devices: this.state.devices}))
 	}
 	filter = (e) =>{
 		this.setState({searchfield: e.target.value})
@@ -147,7 +147,7 @@ onDeleteToken = (token) => {
 		let devices=this.state.devices;
 		delete devices[id];
 		devices=this.cleanArray(devices);
-		return(this.setState(this.state.devices: devices))
+		return(this.setState({devices: devices}))
 	}
 
 	saysomething=(something)=>{
@@ -158,12 +158,11 @@ onDeleteToken = (token) => {
 		const {onRouteChange} = this.props;
 		const {searchfield,devices,numdevices,route} = this.state;
 		if(numdevices>0){
-			this.setState(route: 'dash')
+			if(this.state.route!='dash'){this.setState({route: 'dash'})}
 			this.filteredDevices = devices.filter(device =>{
 				return device.token.toLowerCase().includes(searchfield.toLowerCase());
 			})
 		}else{
-			this.setState(route: 'welcome')
 			this.filteredDevices=[]
 		}
 
@@ -187,7 +186,7 @@ onDeleteToken = (token) => {
 			}
 			</div>)
 			: (route==='welcome'
-				?<welcome/>
+				?<div>RUTA == BIENVENIDO</div>
 				:<div>Loading</div>)
 		}
 
