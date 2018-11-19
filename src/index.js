@@ -1,11 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {render} from 'react-dom';
+import {BrowserRouter} from 'react-router-dom';
 import './index.css';
-import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import 'tachyons';
 import WebFont from 'webfontloader';
-
+import AppRoutes from './routes';
 WebFont.load({
   google: {
     families: ['Cinzel:300,400,700', 'serif']
@@ -13,5 +13,9 @@ WebFont.load({
 });
 
 
-ReactDOM.render(<App />, document.getElementById('root'));
+render(
+	<BrowserRouter>
+		<AppRoutes/>
+	</BrowserRouter>
+	, document.getElementById('root'));
 registerServiceWorker();

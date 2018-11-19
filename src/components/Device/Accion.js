@@ -15,13 +15,13 @@ export default class Action extends Component {
         render(){
         	return(
         		<div className='tl fl w-100'>
-        			<span>
-                        <InputText className="w-40" value={this.state.value} onChange={(e) => this.setState({value: e.target.value})}/>
-                        <Button label="Action" icon="far fa-paper-plane" className='tc p-button-success w-25' onClick={(e) => {this.publish(this.state.value)}}/>
+        			<span className="fl w-100">
+                        <InputText className="w-79" value={this.state.value} onChange={(e) => this.setState({value: e.target.value})}/>
+                        <Button label="" icon="far fa-paper-plane" className='tc p-button-success w-8' onClick={(e) => {this.publish(this.state.value)}}/>
                     </span>
-                    <span>
-                        <Button label="Data now" icon="far fa-paper-plane" className='tc p-button-success w-35' onClick={(e) => {this.publish('now')}}/>
-                    </span>
+                 {/*   <span>
+                        <Button label="Data now" icon="far fa-paper-plane" className='tc p-button-success w-50' onClick={(e) => {this.publish('now')}}/>
+                    </span>*/}
         		</div>
         		)}
     }

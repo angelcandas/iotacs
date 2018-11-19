@@ -3,11 +3,13 @@ import MainScreen from './MainScreen';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import Particles from 'react-particles-js';
+import PropTypes from 'prop-types';
+import {Global} from './services/Global';
 import './App.css';
-import image from './marcaUPVN1.png';
+
 
 //const REACT_VERSION = React.version;
-const URL_SERV = 'http://localhost:3000' //'https://iotacsback.herokuapp.com';
+console.log(Global.URL_SERV) //'https://iotacsback.herokuapp.com';
 const particlesOptions={
   particles: {
     number:{
@@ -41,7 +43,9 @@ const particlesOptions={
 
 
   class App extends Component{
-
+    static propTypes={ 
+      children: PropTypes.object.isRequired
+    }
     constructor(props){
       super(props);
       this.state = {
@@ -59,20 +63,21 @@ const particlesOptions={
         key:''// cookie.load('key')||'',
       }
     }
+
   //console.log("Hola mundo")
 }
 componentDidMount(){
-    let temproute = localStorage.getItem('route')
-    let tempuser = localStorage.getItem('user')
-    let tempisSigned = localStorage.getItem('isSignedIn')
-    if(temproute && tempuser){
-      this.setState({route: temproute});
-      this.setState({user:JSON.parse(tempuser)});
-      console.log(JSON.parse(tempuser))
-    }
-    if(tempisSigned){
-      this.setState({isSignedIn: tempisSigned})
-    }
+  let temproute = localStorage.getItem('route')
+  let tempuser = localStorage.getItem('user')
+  let tempisSigned = localStorage.getItem('isSignedIn')
+  if(temproute && tempuser){
+    this.setState({route: temproute});
+    this.setState({user:JSON.parse(tempuser)});
+    console.log(JSON.parse(tempuser))
+  }
+  if(tempisSigned){
+    this.setState({isSignedIn: tempisSigned})
+  }
     //console.log(REACT_VERSION)
   }
 
@@ -110,47 +115,20 @@ componentDidMount(){
 
 
 }*/
-my_router(route,isSignedIn){
-
-  if(isSignedIn){
-    return(<MainScreen URL_SERV={URL_SERV} loadUser={this.loadUser} onRouteChange={this.onRouteChange} user={this.state.user}/>)
-  }else{
-
-   switch (route) {
-    case 'signin':
-      return(<Signin URL_SERV={URL_SERV} loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>)
-    break;
-    case 'register':
-      return(<Register URL_SERV={URL_SERV} loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>)
-    break;
-    default:
-      return(<Signin URL_SERV={URL_SERV} loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>)
-    break;
-  }
-}
-
-
-}
-
-
 
 render(){
+  const {children}=this.props;
   const {route,isSignedIn}=this.state;
-
-
-
-
     //console.log(this.state)
     /*if(isSignedIn)
       console.log(route==="home")
       console.log(isSignedIn)*/
       return(
         <div className='App'>
-        <img src={image} alt='UPV' className='logo'/>
         <Particles className='particles' params={particlesOptions}/>     
-        {this.my_router(route,isSignedIn)}
+          {children}
         </div>)}
-        
-}
 
-export default App
+    }
+
+    export default App

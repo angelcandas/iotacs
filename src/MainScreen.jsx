@@ -3,7 +3,8 @@ import Device from './components/Device/Device';
 import {InputText} from 'primereact/components/inputtext/InputText';
 import {Button} from 'primereact/components/button/Button';
 import {Growl} from 'primereact/components/growl/Growl';
-
+import TopBar from './components/topBar';
+import {Global} from './services/Global';
 
 /*const initialState= {
 			searchfield:'',
@@ -19,17 +20,22 @@ import {Growl} from 'primereact/components/growl/Growl';
 		export default class MainScreen extends React.Component{
 			constructor(props){
 				super(props);
+				if(!localStorage.getItem('token') || !localStorage.getItem('user')){
+					this.props.history.push("login");
+					window.location.reload();
+				}
 				this.state={
-					user: this.props.user,
-					key: this.props.user.key,
+					user: JSON.parse(localStorage.getItem('user')),
+					key: JSON.parse(localStorage.getItem('user')).key,
 					searchfield:'',
 					devices:[
 					],
 					numdevices: 0,
 					route: 'dash',
 					actualToken: null,
-					URL_SERV:this.props.URL_SERV,
+					URL_SERV: "http://localhost:3000",
 				};
+				this.growl=Growl;
 
 			}
 
@@ -41,38 +47,38 @@ import {Growl} from 'primereact/components/growl/Growl';
 					return device.token.toLowerCase().includes(searchfield.toLowerCase());
 				})		
 				filteredDevices.map((device,i)=>{
-					return(<Device URL_SERV={this.state.URL_SERV} key={i} llave={this.state.key} value={i} getData={this.getData} devicename={device.devicename} token={device.token} name={device.name} deleteItem={this.onDeleteToken}/>)
+					return(<Device URL_SERV={Global.URL_SERV} key={i} llave={this.state.key} value={i} getData={this.getData} devicename={device.devicename} token={device.token} name={device.name} deleteItem={this.onDeleteToken}/>)
 				})
 
-};
+			};
 
-onChangeRoute = (route,token) =>{
-	this.setState({route: route, actualToken: token})
-}
+			onChangeRoute = (route,token) =>{
+				this.setState({route: route, actualToken: token})
+			}
 
-onRequestToken = () => {
-	const email=this.state.user.email;
-	fetch(this.state.URL_SERV+'/token',{
-		method: 'post',
-		headers: {'content-type': 'application/json',
-		'Authorization': localStorage.getItem('token')
-	},
-	body: JSON.stringify({
-		email: email,
-	})
-})
-	.then(response => response.json())
-	.then(()=>{
-		console.log("err email: "+email)
-		this.getData()
-		
-	})
-	return;
-}
-onDeleteToken = (token) => {
+			onRequestToken = () => {
+				const email=this.state.user.email;
+				fetch(Global.URL_SERV+'/token',{
+					method: 'post',
+					headers: {'content-type': 'application/json',
+					'Authorization': localStorage.getItem('token')
+				},
+				body: JSON.stringify({
+					email: email,
+				})
+			})
+				.then(response => response.json())
+				.then(()=>{
+					console.log("err email: "+email)
+					this.getData()
+
+				})
+				return;
+			}
+			onDeleteToken = (token) => {
 		//const email=this.state.user.email;
 		console.log("delete: "+token)
-		fetch(this.state.URL_SERV+'/token',{
+		fetch(Global.URL_SERV+'/token',{
 			method: 'delete',
 			headers: {'content-type': 'application/json',
 			'Authorization':localStorage.getItem('token')},
@@ -106,7 +112,7 @@ onDeleteToken = (token) => {
 	getData=() =>{
 		const email=this.state.user.email;
 		console.log("getting data: "+email)
-		fetch(this.state.URL_SERV+'/tokens/'+email,{
+		fetch(Global.URL_SERV+'/tokens/'+email,{
 			method: 'get',
 			headers: {'content-type': 'application/json',
 			'Authorization': localStorage.getItem('token')
@@ -114,7 +120,8 @@ onDeleteToken = (token) => {
 	})
 		.then(response => response.json())
 		.then(data =>{    		
-			return(this.setState({devices:data,numdevices: data.length}))
+			console.log(data)
+			return(this.setState({devices:data,numdevices: (data.length||0)}))
 		})
 		.catch(err=>{
 			console.log(err)
@@ -128,7 +135,7 @@ onDeleteToken = (token) => {
 	}
 
 	addItem = ()=>{
-		console.log(this.state.URL_SERV)
+		console.log(Global.URL_SERV)
 		if(this.state.numdevices<4){
 			this.onRequestToken();
 		}
@@ -151,45 +158,31 @@ onDeleteToken = (token) => {
 	}
 
 	saysomething=(something)=>{
-		this.growl.show({ severity: 'info', summary: {something}, detail: ''})
+		this.growl.show({ severity: 'info', summary: something, detail: 'success'})
 	}
 
 	render(){
-		const {onRouteChange} = this.props;
 		const {searchfield,devices,numdevices,route} = this.state;
 		if(numdevices>0){
 			if(this.state.route!='dash'){this.setState({route: 'dash'})}
-			this.filteredDevices = devices.filter(device =>{
-				return device.token.toLowerCase().includes(searchfield.toLowerCase());
-			})
+				this.filteredDevices = devices.filter(device =>{
+					return device.token.toLowerCase().includes(searchfield.toLowerCase());
+				})
 		}else{
 			this.filteredDevices=[]
 		}
 
 		return(
-			<div>
-			<Growl ref={(el) => {this.growl = el; }}></Growl>  
-			<div className="top_bar tc">
-			<span className="fl w-third">{'Welcome '+this.props.user.name}</span>
-			<span className="fl w-third">
-			<InputText onChange={this.filter} placeholder='Search'/>
-			<Button label="Logout" icon="fas fa-sign-out-alt" style={{marginLeft:4}} onClick={() => onRouteChange('signout')}/>
-			<Button label="Add" icon="fas fa-plus" onClick={()=>this.addItem()} />
-			</span>
-			</div>
-			{route==='dash'
-			?(<div className='flex justify-around self-around items-around ma0 pa0 pt3 flex-wrap fl w-100 h-80'>
+		<div>
+		<Growl ref={(el) => this.growl = el} />
+			<TopBar history={this.props.history}/>
+			<div className='flex justify-around self-around items-around ma0 pa0 pt3 flex-wrap fl w-100 h-80'>
 			{
 				this.filteredDevices.map((device,i)=>{
-					return(<Device URL_SERV={this.state.URL_SERV} getData={this.getData} llave={this.state.key} key={i} value={i} device={device} growl={this.saysomething} deleteItem={this.onDeleteToken}/>)
+					return(<Device URL_SERV={Global.URL_SERV} getData={this.getData} llave={this.state.key} key={i} value={i} device={device} growl={this.saysomething} deleteItem={this.onDeleteToken}/>)
 				})
 			}
-			</div>)
-			: (route==='welcome'
-				?<div>RUTA == BIENVENIDO</div>
-				:<div>Loading</div>)
-		}
-
+			</div>
 		</div>
 
 		)

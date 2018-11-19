@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button} from 'primereact/components/button/Button';
+import {Global} from '../../services/Global';
 	class Register extends React.Component{
 	constructor(){
 		super();
@@ -16,13 +17,15 @@ import {Button} from 'primereact/components/button/Button';
 	onNameChange =(event) =>{
 		this.setState({signInName: event.target.value})
 	}
-
+	redirect = () =>{
+		this.props.history.push("/login")
+	}
 	onEmailChange = (event) =>{
 		this.setState({signInEmail: event.target.value})
 	}
 	onSubmitSignIn = () =>{
-		console.log("URL: "+this.props.URL_SERV)
-		fetch(this.props.URL_SERV+'/register',{
+		console.log("URL: "+Global.URL_SERV)
+		fetch(Global.URL_SERV+'/register',{
 			method: 'post',
 			headers: {'content-type': 'application/json'},
 			body: JSON.stringify({
@@ -90,11 +93,11 @@ import {Button} from 'primereact/components/button/Button';
 		    <div className="">
 		      <Button 
 		      onClick={this.onSubmitSignIn}
-		      className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
+		      className="b ph3 pv2 input-reset ba b--black bg-transparent pointer f6 dib" 
 		      label="Register"/>
 		    </div>
 		    <div className="lh-copy mt3">
-		      <p onClick={() => onRouteChange('signin')} className="pointer f6 link dim black db">Already an account?</p>
+		      <p onClick={this.redirect} className="pointer f6 link dim black db">Already an account?</p>
 		    </div>
 		  </form>
 		</main>

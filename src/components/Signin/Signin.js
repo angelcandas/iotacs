@@ -1,26 +1,33 @@
 import React from 'react';
 import {Button} from 'primereact/components/button/Button';
-
+import { Redirect } from 'react-router-dom'
+import {Global} from '../../services/Global';
 class Signin extends React.Component{
 
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
+	/*    if(localStorage.getItem('token') && localStorage.getItem('user')){
+	      this.props.history.push("dash")
+	    }*/
 		this.state={
 			signInEmail:'',
 			signInPassword:'',
-
 		}
+
+
 	}
 	onPasswordChange =(event) =>{
 		this.setState({signInPassword: event.target.value})
 	}
-
+	redirect = () =>{
+		this.props.history.push("/register")
+	}
 	onEmailChange = (event) =>{
 		this.setState({signInEmail: event.target.value})
 	}
 	onSubmitSignIn = () =>{
-		console.log("URL_SERV_SERV: "+this.props.URL_SERV)
-		fetch(this.props.URL_SERV+'/signin',{
+		console.log("URL_SERV: "+Global.URL_SERV)
+		fetch(Global.URL_SERV+'/signin',{
 			method: 'post',
 			headers: {'content-type': 'application/json'},
 			body: JSON.stringify({
@@ -31,15 +38,17 @@ class Signin extends React.Component{
 		.then(response => response.json())
 		.then(user =>{
 			if (user.token) {
-				this.props.loadUser(user.user[0])
+				console.log(user)
+				/*this.props.loadUser(user.user[0])*/
 				localStorage.setItem('token', user.token)
 				localStorage.setItem('user', JSON.stringify(user.user[0]))
-				this.props.onRouteChange('home');
+				this.props.history.push("/dash")
+				/*this.props.onRouteChange('home');*/
 			}
 		})
 	}
 	render(){
-		const {onRouteChange} = this.props;
+		const {history} = this.props;
 	return(
 		<div>
 		<article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 center shadow-5 panel">
@@ -71,12 +80,13 @@ class Signin extends React.Component{
 		    <div className="">
 		      <Button 
 		      onClick={this.onSubmitSignIn}
-		      className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
+		      className="b ph3 pv2 input-reset ba b--black bg-transparent pointer f6 dib" 
 		      type="button" 
 		      label="Sign in"/>
 		    </div>
 		    <div className="lh-copy mt3">
-		      <p onClick={() => onRouteChange('register')} className="pointer f6 link dim black db">Register</p>
+		    {/*onClick={() => onRouteChange('register')}*/}
+		      <p onClick={this.redirect} className="pointer f6 link dim black db">Register</p>
 		    </div>
 		  </form>
 		</main>

@@ -23,7 +23,7 @@ export default class Device extends Component {
 		this.state={
 			visible: false,
 			data:[],
-			lastData:[],
+			lastData:50,
 			token:this.props.device.token,
 			device:this.props.device,
 			URL_SERV:this.props.URL_SERV,
@@ -38,7 +38,8 @@ export default class Device extends Component {
 		}
 //console.log("el pajaro es la: "+this.props.email)
 this.etitle="Device editor"
-client= mqtt.connect('ws://localhost:5200'||'wss://iotacsmqtt.herokuapp.com',settings);
+/*'ws://localhost:5200'||*/
+client= mqtt.connect('wss://iotacsmqtt.herokuapp.com',settings);
 client.subscribe("users/"+this.props.device.email);
 
 client.on("message", (topic, payload) =>{
@@ -62,6 +63,7 @@ publish_ws=(mensaje)=>{
 		sentido: 'action',
 	}
 	client.publish(this.state.token+'/'+this.props.device.email, JSON.stringify(data));
+	this.props.growl("Message sent to "+this.props.device.name+": "+mensaje)
 
 //console.log("publicando en:"+this.state.token+'/'+this.props.device.email)
 }
@@ -154,16 +156,19 @@ onHide=()=>{
 render(){
 	let icon="";
 	let ichart="";
-	const {name,units,value,token,measuring,tipo,show1,show6}=this.state.device;
+	const {name,units,value,token,measuring,tipo,show1,show6,show4,show5}=this.state.device;
 	const {data,lastData}=this.state;
+	console.log("Last data: "+lastData)
 //console.log(show6)
 if (show6.includes('L')) {
-	icon=<div id='grafica' className='fl w-70'><LineChartDemo URL_SERV={this.state.URL_SERV} ref={this.child}  token={token} name={name} units={units} data={data} measuring={measuring} tipo={tipo} onDataChange={this.onDataChange}/></div>
+	icon=<div id='grafica' className='fl w-70'>
+	<LineChartDemo URL_SERV={this.state.URL_SERV} ref={this.child}  token={token} name={name} units={units} data={data} measuring={measuring} tipo={tipo} onDataChange={this.onDataChange}/>
+	</div>
 }
 if (show6.includes('R')) {
-	icon=<div id='grafica' className='fl w-70 row'>
-	<span className='fl w-30 h-100'><RadarChartDemo  ref={this.child} datamin={-30} datamax={30} token={token} name={name} units={units} data={lastData} measuring={measuring} tipo={tipo} onDataChange={this.onDataChange}/></span>
-	<span className='fl w-70 h-100'><LineChartDemo  URL_SERV={this.state.URL_SERV} ref={this.child}  token={token} name={name} units={units} data={data} measuring={measuring} tipo={tipo} onDataChange={this.onDataChange}/></span>
+	icon=<div id='grafica' className='fl w-70 mt-5'>
+	<RadarChartDemo  ref={this.child} datamin={show4} datamax={show5} token={token} name={name} units={units} data={this.state.lastData} measuring={measuring} tipo={tipo} onDataChange={this.onDataChange}/>
+	{/*<span className='fl w-70 h-100'><LineChartDemo  URL_SERV={this.state.URL_SERV} ref={this.child}  token={token} name={name} units={units} data={data} measuring={measuring} tipo={tipo} onDataChange={this.onDataChange}/></span>*/}
 	</div>
 }
 if (true) {
@@ -174,31 +179,23 @@ if (true) {
 	</div>
 	<TempChartDemo  className='tc w-20' visible={show1} token={token} units={units} data={lastData}/>
 	</h2>
-	<Action className='tc' publish={this.publish_ws}/>
+	<Action className='tc' publish={this.publish_ws} />
 	</div>
 }
 return(
-	<div>
-	<Dialog header={this.etitle} visible={this.state.visible}  modal={true} onHide={()=>this.setState({visible:false})}>
+	<div className="Panel">
+	<Dialog className="Dialog" header={this.etitle} visible={this.state.visible}  modal={true} onHide={()=>this.setState({visible:false})}>
 	<DeviceForm URL_SERV={this.state.URL_SERV} refresh={this.updates} getData={this.props.getData} token={token} device={this.state.device} tipo={'Temperatura'} onHide={this.onHide}/>
 	</Dialog>
-	<Card className="ui-card-shadow flex-wrap panel pb-5" style={{'width': '1400px','height': '250px'}}>
-	<div className="fl w-100 pa0 ma0">
-	<Button label="Copy token:" className='fl w-20 f6' onClick={()=>this.copiartoken()}></Button>
-	<p id='myInput' className="fl w-34 pa0 ma0 ba f4" value={token}>{token}</p>
-	</div>
-
-	<div>
-	<nav className='relative top-0 right-2' >
-	<Button className='absolute top-0 right-2 alert' icon="fas fa-refresh" label=''	iconPos="left" value={value} onClick={()=>this.refresh(this.state.token)}/>
-	<Button className='absolute top-0 right-3 alert' icon="fas fa-edit" 		iconPos="left" value={value} onClick={()=>this.setState({visible:true})}/>
-	<Button className='absolute top-0 right-0 alert' icon="fas fa-trash"  	iconPos="left" value={value} onClick={()=>this.props.deleteItem(this.state.token)}/>
-	</nav>
-	</div>
 	{ichart}
 	{icon}
-
-	</Card>
+	<div>
+	<nav className='botones_device' >
+	<Button className='relative top-0 right-0 alert' icon="fas fa-refresh" label=''	iconPos="left" value={value} onClick={()=>this.refresh(this.state.token)}/>
+	<Button className='relative top-0 right-0 alert' icon="fas fa-edit" 		iconPos="left" value={value} onClick={()=>this.setState({visible:true})}/>
+	<Button className='relative top-0 right-0 alert' icon="fas fa-trash"  	iconPos="left" value={value} onClick={()=>this.props.deleteItem(this.state.token)}/>
+	</nav>
+	</div>
 	</div>
 	)
 }
